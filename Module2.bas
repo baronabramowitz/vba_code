@@ -4,25 +4,31 @@ Sub ValueBond()
 
 Dim cp As Double, md As Date, ppy As Integer, cpd As Date, cpdMod As Date
 Dim cr As Double, br As String, bt As String, wd As Integer, dr As Double
-Dim fv As Double, td As Date, cpds() As Variant, i As Integer, integ As Integer
+Dim fv As Currency, td As Date, cpds() As Variant, i As Integer, integ As Integer
 Dim dtp As Long, dtps() As Variant, pvcps() As Variant, pvfcfs As Double
 Dim durcalc() As Variant, durcalcs As Double
-
+Dim convcalc() As Variant, convcalcs As Double
 
 td = Now
-fv = ActiveCell
-cr = ActiveCell.Offset(0, 2)
-ppy = ActiveCell.Offset(0, 3)
-br = ActiveCell.Offset(0, 4)
-bt = ActiveCell.Offset(0, 5)
-dr = ActiveCell.Offset(0, 6)
+'fv = Sheet1.Range("$A2").value
+'md = Sheet1.Range("$B2").value
+'cr = Sheet1.Range("$C2").value
+'ppy = Sheet1.Range("$D2").value
+'br = Sheet1.Range("$E2").value
+'bt = Sheet1.Range("$F2").value
+'dr = Sheet1.Range("$G2").value
+fv = ActiveCell.value
+md = ActiveCell.Offset(0, 1).value
+cr = ActiveCell.Offset(0, 2).value
+ppy = ActiveCell.Offset(0, 3).value
+br = ActiveCell.Offset(0, 4).value
+bt = ActiveCell.Offset(0, 5).value
+dr = ActiveCell.Offset(0, 6).value
 If ppy = 0 Then
     cp = 0
 Else:
     cp = (fv * cr) / ppy
 End If
-
-md = ActiveCell.Offset(0, 1)
 If Weekday(md, vbMonday) = 7 Then
     md = md + 1
 ElseIf Weekday(md, vbMonday) = 6 Then
@@ -31,6 +37,7 @@ End If
 If ppy = 0 Then
     pvfcfs = fv / (1 + dr / 365) ^ (md - DateValue(CStr(Now())))
     durcalcs = (md - td) / 365
+    convcalcs = (((md - td) / 365) ^ 2 + (md - td) / 365) / (1 + dr) ^ 2
 Else:
     cpd = DateAdd("M", -12 / ppy, md)
     If Weekday(cpd, vbMonday) = 7 Then
@@ -74,10 +81,36 @@ Else:
         durcalc(i) = (dtps(i) / 365) * pvcps(i)
     End If
     Next i
+    For i = 0 To UBound(dtps)
+    ReDim Preserve convcalc(0 To i)
+    If i = 0 Then
+        convcalc(i) = ((dtps(i) / 365) ^ 2 + (dtps(i) / 365)) _
+        * (pvcps(i) + fv / (1 + dr / 365) ^ dtps(0))
+    Else
+        convcalc(i) = ((dtps(i) / 365) ^ 2 + (dtps(i) / 365)) * pvcps(i)
+    End If
+    Next i
     pvfcfs = fv / (1 + dr / 365) ^ dtps(0) + Application.WorksheetFunction.Sum(pvcps)
     durcalcs = Application.WorksheetFunction.Sum(durcalc) / pvfcfs
+    convcalcs = Application.WorksheetFunction.Sum(convcalc) / (pvfcfs * (1 + dr) ^ 2)
 End If
-ActiveCell.Offset(0, 7) = pvfcfs
-ActiveCell.Offset(0, 8) = durcalcs
+'Sheet1.Range("$H2").value = pvfcfs
+'Sheet1.Range("$I2").value = durcalcs
+'Sheet1.Range("$J2").value = convcalcs
+ActiveCell.Offset(0, 7).value = pvfcfs
+ActiveCell.Offset(0, 8).value = durcalcs
+ActiveCell.Offset(0, 9).value = convcalcs
 End Sub
 
+Sub ValuePortfolio()
+Dim row As Long
+row = 2
+Sheets("bond_portfolio_data").Select
+Do Until ActiveSheet.Cells(row, 1) = ""
+    ActiveSheet.Cells(row, 1).Select
+    Call ValueBond
+    row = row + 1
+Loop
+ActiveSheet.Cells(row, 8).value = "=SUM(R[-8]C:R[-1]C)"
+ActiveSheet.Cells(row, 7).value = "Portfolio Value:"
+End Sub
