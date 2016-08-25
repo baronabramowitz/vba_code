@@ -1,6 +1,6 @@
 Option Explicit
 
-Sub ValueBond()
+Sub BondMetrics()
 
 Dim cp As Double, md As Date, ppy As Integer, cpd As Date, cpdMod As Date
 Dim cr As Double, br As String, bt As String, wd As Integer, dr As Double
@@ -102,15 +102,31 @@ ActiveCell.Offset(0, 8).value = durcalcs
 ActiveCell.Offset(0, 9).value = convcalcs
 End Sub
 
-Sub ValuePortfolio()
+Sub PortfolioMetrics()
 Dim row As Long
 row = 2
 Sheets("bond_portfolio_data").Select
 Do Until ActiveSheet.Cells(row, 1) = ""
     ActiveSheet.Cells(row, 1).Select
-    Call ValueBond
+    Call BondMetrics
     row = row + 1
 Loop
 ActiveSheet.Cells(row, 8).value = "=SUM(R[-8]C:R[-1]C)"
 ActiveSheet.Cells(row, 7).value = "Portfolio Value:"
+row = 2
+Do Until ActiveSheet.Cells(row, 1) = ""
+    ActiveSheet.Cells(row, 1).Select
+    ActiveCell.Offset(0, 10).value = "=RC[-3]*RC[-2]"
+    row = row + 1
+Loop
+ActiveSheet.Cells(row, 11).value = "=(SUM(R[-8]C:R[-1]C))/RC[-3]"
+ActiveSheet.Cells(row, 10).value = "Portfolio Duration:"
+row = 2
+Do Until ActiveSheet.Cells(row, 1) = ""
+    ActiveSheet.Cells(row, 1).Select
+    ActiveCell.Offset(0, 11).value = "=RC[-4]*RC[-2]"
+    row = row + 1
+Loop
+ActiveSheet.Cells(row, 12).value = "=(SUM(R[-8]C:R[-1]C))/RC[-4]"
+'ActiveSheet.Cells(row, 11).value = "Portfolio Duration:"
 End Sub
