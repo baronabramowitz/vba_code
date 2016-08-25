@@ -102,6 +102,8 @@ ActiveCell.Offset(0, 8).value = durcalcs
 ActiveCell.Offset(0, 9).value = convcalcs
 End Sub
 
+'**New function starts here!**
+
 Sub PortfolioMetrics()
 Dim row As Long
 row = 2
