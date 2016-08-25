@@ -106,6 +106,17 @@ End Sub
 
 Sub PortfolioMetrics()
 Dim row As Long
+ActiveSheet.Range("H1").value = "bond_values_dirty"
+ActiveSheet.Range("I1").value = "bond_durations"
+ActiveSheet.Range("J1").value = "bond_convexities"
+ActiveSheet.Range("A1:J1").Interior.ColorIndex = 1
+ActiveSheet.Range("A1:J1").Font.ColorIndex = 2
+With ActiveSheet.Range("A1:J1").Borders
+    .LineStyle = xlContinuous
+    .Weight = xlThin
+    .ColorIndex = 2
+End With
+
 row = 2
 Sheets("bond_portfolio_data").Select
 Do Until ActiveSheet.Cells(row, 1) = ""
@@ -115,6 +126,16 @@ Do Until ActiveSheet.Cells(row, 1) = ""
 Loop
 ActiveSheet.Cells(row, 8).value = "=SUM(R[-8]C:R[-1]C)"
 ActiveSheet.Cells(row, 7).value = "Portfolio Value:"
+ActiveSheet.Cells(row, 7).Interior.ColorIndex = 1
+ActiveSheet.Cells(row, 7).Font.ColorIndex = 2
+ActiveSheet.Cells(row, 8).Interior.ColorIndex = 1
+ActiveSheet.Cells(row, 8).Font.ColorIndex = 2
+
+row = 2
+Do Until ActiveSheet.Cells(row, 8) = ""
+    ActiveSheet.Cells(row, 8).NumberFormat = "$#,##0.00"
+    row = row + 1
+Loop
 row = 2
 Do Until ActiveSheet.Cells(row, 1) = ""
     ActiveSheet.Cells(row, 1).Select
@@ -122,7 +143,12 @@ Do Until ActiveSheet.Cells(row, 1) = ""
     row = row + 1
 Loop
 ActiveSheet.Cells(row, 11).value = "=(SUM(R[-8]C:R[-1]C))/RC[-3]"
-ActiveSheet.Cells(row, 10).value = "Portfolio Duration:"
+ActiveSheet.Cells(row + 1, 7).value = "Portfolio Duration:"
+ActiveSheet.Cells(row + 1, 8).value = ActiveSheet.Cells(row, 11).value
+ActiveSheet.Cells(row + 1, 7).Interior.ColorIndex = 1
+ActiveSheet.Cells(row + 1, 7).Font.ColorIndex = 2
+ActiveSheet.Cells(row + 1, 8).Interior.ColorIndex = 1
+ActiveSheet.Cells(row + 1, 8).Font.ColorIndex = 2
 row = 2
 Do Until ActiveSheet.Cells(row, 1) = ""
     ActiveSheet.Cells(row, 1).Select
@@ -130,5 +156,13 @@ Do Until ActiveSheet.Cells(row, 1) = ""
     row = row + 1
 Loop
 ActiveSheet.Cells(row, 12).value = "=(SUM(R[-8]C:R[-1]C))/RC[-4]"
-'ActiveSheet.Cells(row, 11).value = "Portfolio Duration:"
+ActiveSheet.Cells(row + 2, 7).value = "Portfolio Convexity:"
+ActiveSheet.Cells(row + 2, 8).value = ActiveSheet.Cells(row, 12).value
+ActiveSheet.Cells(row + 2, 7).Interior.ColorIndex = 1
+ActiveSheet.Cells(row + 2, 7).Font.ColorIndex = 2
+ActiveSheet.Cells(row + 2, 8).Interior.ColorIndex = 1
+ActiveSheet.Cells(row + 2, 8).Font.ColorIndex = 2
+Columns("K:M").Select
+Selection.EntireColumn.Hidden = True
+Columns("G:G").EntireColumn.AutoFit
 End Sub
