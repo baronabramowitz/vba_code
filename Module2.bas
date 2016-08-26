@@ -154,7 +154,7 @@ Do Until ActiveSheet.Cells(row, 1) = ""
     ActiveCell.Offset(0, 10).value = "=RC[-3]*RC[-2]"
     row = row + 1
 Loop
-ActiveSheet.Cells(row, 11).value = "=(SUM(R[-8]C:R[-1]C))/RC[-3]"
+ActiveSheet.Cells(row, 11).value = "=(SUM(R2C:R[-1]C))/RC[-3]"
 ActiveSheet.Cells(row + 1, 7).value = "Portfolio Duration:"
 ActiveSheet.Cells(row + 1, 8).value = ActiveSheet.Cells(row, 11).value
 ActiveSheet.Cells(row + 1, 7).Interior.ColorIndex = 1
@@ -167,7 +167,7 @@ Do Until ActiveSheet.Cells(row, 1) = ""
     ActiveCell.Offset(0, 11).value = "=RC[-4]*RC[-2]"
     row = row + 1
 Loop
-ActiveSheet.Cells(row, 12).value = "=(SUM(R[-8]C:R[-1]C))/RC[-4]"
+ActiveSheet.Cells(row, 12).value = "=(SUM(R2C:R[-1]C))/RC[-4]"
 ActiveSheet.Cells(row + 2, 7).value = "Portfolio Convexity:"
 ActiveSheet.Cells(row + 2, 8).value = ActiveSheet.Cells(row, 12).value
 ActiveSheet.Cells(row + 2, 7).Interior.ColorIndex = 1
