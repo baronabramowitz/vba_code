@@ -35,9 +35,12 @@ ElseIf Weekday(md, vbMonday) = 6 Then
     md = md + 2
 End If
 If ppy = 0 Then
-    pvfcfs = fv / (1 + dr / 365) ^ (md - DateValue(CStr(Now())))
-    durcalcs = (md - td) / 365
-    convcalcs = (((md - td) / 365) ^ 2 + (md - td) / 365) / (1 + dr) ^ 2
+    pvfcfs = _
+    fv / (1 + dr / 365) ^ (md - DateValue(CStr(Now())))
+    durcalcs = _
+    (md - td) / 365
+    convcalcs = _
+    (((md - td) / 365) ^ 2 + (md - td) / 365) / (1 + dr) ^ 2
 Else:
     cpd = DateAdd("M", -12 / ppy, md)
     If Weekday(cpd, vbMonday) = 7 Then
@@ -76,9 +79,11 @@ Else:
     For i = 0 To UBound(dtps)
     ReDim Preserve durcalc(0 To i)
     If i = 0 Then
-        durcalc(i) = (dtps(i) / 365) * (pvcps(i) + fv / (1 + dr / 365) ^ dtps(0))
+        durcalc(i) = (dtps(i) / 365) _
+        * (pvcps(i) + fv / (1 + dr / 365) ^ dtps(0))
     Else
-        durcalc(i) = (dtps(i) / 365) * pvcps(i)
+        durcalc(i) = (dtps(i) / 365) _
+        * pvcps(i)
     End If
     Next i
     For i = 0 To UBound(dtps)
@@ -87,12 +92,16 @@ Else:
         convcalc(i) = ((dtps(i) / 365) ^ 2 + (dtps(i) / 365)) _
         * (pvcps(i) + fv / (1 + dr / 365) ^ dtps(0))
     Else
-        convcalc(i) = ((dtps(i) / 365) ^ 2 + (dtps(i) / 365)) * pvcps(i)
+        convcalc(i) = ((dtps(i) / 365) ^ 2 + (dtps(i) / 365)) _
+        * pvcps(i)
     End If
     Next i
-    pvfcfs = fv / (1 + dr / 365) ^ dtps(0) + Application.WorksheetFunction.Sum(pvcps)
-    durcalcs = Application.WorksheetFunction.Sum(durcalc) / pvfcfs
-    convcalcs = Application.WorksheetFunction.Sum(convcalc) / (pvfcfs * (1 + dr) ^ 2)
+    pvfcfs = fv / (1 + dr / 365) ^ dtps(0) _
+            + Application.WorksheetFunction.Sum(pvcps)
+    durcalcs = Application.WorksheetFunction.Sum(durcalc) / _
+                pvfcfs
+    convcalcs = Application.WorksheetFunction.Sum(convcalc) / _
+                (pvfcfs * (1 + dr) ^ 2)
 End If
 'Sheet1.Range("$H2").value = pvfcfs
 'Sheet1.Range("$I2").value = durcalcs
@@ -106,6 +115,9 @@ End Sub
 
 Sub PortfolioMetrics()
 Dim row As Long
+
+Application.ScreenUpdating = False
+
 ActiveSheet.Range("H1").value = "bond_values_dirty"
 ActiveSheet.Range("I1").value = "bond_durations"
 ActiveSheet.Range("J1").value = "bond_convexities"
@@ -164,5 +176,8 @@ ActiveSheet.Cells(row + 2, 8).Interior.ColorIndex = 1
 ActiveSheet.Cells(row + 2, 8).Font.ColorIndex = 2
 Columns("K:M").Select
 Selection.EntireColumn.Hidden = True
-Columns("G:G").EntireColumn.AutoFit
+Columns("A:J").EntireColumn.AutoFit
+
+Application.ScreenUpdating = True
+
 End Sub
